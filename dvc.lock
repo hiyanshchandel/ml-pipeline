@@ -5,8 +5,11 @@ stages:
     deps:
     - path: src/data_ingestion.py
       hash: md5
-      md5: 062add45a08eac88281b6aebeae87733
-      size: 3151
+      md5: 2c621add161420c03e6f6673ae5a3d45
+      size: 3813
+    params:
+      params.yaml:
+        data_ingestion.test_size: 0.2
     outs:
     - path: data/raw_data
       hash: md5
@@ -41,8 +44,11 @@ stages:
       nfiles: 2
     - path: src/feature_engineering.py
       hash: md5
-      md5: 30701bcc5c5a5a3cbfd08cf19016a02a
-      size: 2875
+      md5: 1f60c65d0d3579245ef24e6ef424713f
+      size: 3482
+    params:
+      params.yaml:
+        feature_engineering.max_features: 500
     outs:
     - path: data/feature_engineered_data
       hash: md5
@@ -59,8 +65,12 @@ stages:
       nfiles: 2
     - path: src/model_training.py
       hash: md5
-      md5: ed8ef70d992a9b2d039d670150c43568
-      size: 3399
+      md5: 849775c7aacb5cd04a4ed0630f01736c
+      size: 4043
+    params:
+      params.yaml:
+        model_training.n_estimators: 40
+        model_training.random_state: 2
     outs:
     - path: models/random_forest_model.pkl
       hash: md5

@@ -3,6 +3,7 @@ import pandas as pd
 import logging
 import os
 import pickle
+import yaml
 from sklearn.ensemble import RandomForestClassifier
 
 log_dir = 'logs'
@@ -25,6 +26,20 @@ file_handler.setFormatter(formatter)
 
 logger.addHandler(console_handler)
 logger.addHandler(file_handler)
+
+def load_params(params_path: str) -> dict:
+    """load parameters from a json file"""
+    try:
+        with open(params_path, 'r') as file:
+            params = yaml.safe_load(file)
+            return params
+        logger.info(f"Parameters loaded successfully from {params_path}")
+    except FileNotFoundError as e:
+        logger.error(f"Parameters file not found: {e}")
+        raise
+    except yaml.YAMLError as e:
+        logger.error(f"Error parsing YAML file: {e}")
+        raise 
 
 def train_model(X_train: np.ndarray, y_train: np.ndarray, params : dict) -> RandomForestClassifier:
     """
@@ -82,18 +97,19 @@ def main():
         train_data = pd.read_csv('./data/feature_engineered_data/train_tfidf.csv')
         X_train = train_data.drop(columns=['label']).values
         y_train = train_data['label'].values
+        params = load_params(params_path='params.yaml')
 
         logger.info('Training data loaded successfully')
         logger.debug(f'Training data shape: {X_train.shape}, Labels shape: {y_train.shape}')
 
         # Define model parameters
-        params = {
-            'n_estimators': 40,
-            'random_state': 2
+        params_dict = {
+            'n_estimators': params['model_training']['n_estimators'],
+            'random_state': params['model_training']['random_state']
         }
 
         # Train the model
-        model = train_model(X_train, y_train, params)
+        model = train_model(X_train, y_train, params_dict)
 
         # Save the trained model
         save_model(model, './models/random_forest_model.pkl')

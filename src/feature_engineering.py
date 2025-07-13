@@ -2,6 +2,7 @@ import pandas as pd
 import os
 from sklearn.feature_extraction.text import TfidfVectorizer
 import logging
+import yaml
 
 # Ensure the "logs" directory exists
 log_dir = 'logs'
@@ -25,7 +26,20 @@ file_handler.setFormatter(formatter)
 logger.addHandler(console_handler)
 logger.addHandler(file_handler)
 
-
+def load_params(params_path: str) -> dict:
+    """load parameters from a json file"""
+    try:
+        with open(params_path, 'r') as file:
+            params = yaml.safe_load(file)
+            return params
+        logger.info(f"Parameters loaded successfully from {params_path}")
+    except FileNotFoundError as e:
+        logger.error(f"Parameters file not found: {e}")
+        raise
+    except yaml.YAMLError as e:
+        logger.error(f"Error parsing YAML file: {e}")
+        raise 
+    
 def tfidf(train_data : pd.DataFrame,test_data : pd.DataFrame, max_features :int) -> tuple:
     """
     applies tfidf vectorization on the train and test data"""
@@ -57,14 +71,16 @@ def main():
         """loads the train and test data, applies tfidf vectorization and saves the transformed data"""
         train_data = pd.read_csv('./data/processed_data/train_processed.csv')
         test_data = pd.read_csv('./data/processed_data/test_processed.csv')
-    
+        
+        params = load_params(params_path='params.yaml')
+
         train_data.fillna('', inplace=True)
         test_data.fillna('', inplace=True)
 
         logger.info('Train and test data loaded successfully')
         logger.debug(f'Train data shape: {train_data.shape}, Test data shape: {test_data.shape}')
 
-        max_features = 500
+        max_features = params['feature_engineering']['max_features']
         train_df, test_df = tfidf(train_data, test_data, max_features)
 
         data_path = os.path.join('data', 'feature_engineered_data')
