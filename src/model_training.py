@@ -88,7 +88,7 @@ def main():
 
         # Define model parameters
         params = {
-            'n_estimators': 50,
+            'n_estimators': 40,
             'random_state': 2
         }
 
