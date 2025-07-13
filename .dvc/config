@@ -1,0 +1,4 @@
+[core]
+    remote = dvcstor
+['remote "dvcstor"']
+    url = s3://spamhammodel

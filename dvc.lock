@@ -69,13 +69,13 @@ stages:
       size: 4043
     params:
       params.yaml:
-        model_training.n_estimators: 50
+        model_training.n_estimators: 57
         model_training.random_state: 2
     outs:
     - path: models/random_forest_model.pkl
       hash: md5
-      md5: 3afd835c4ecaea05dc53eb6fa0faa139
-      size: 3432567
+      md5: 03a76521d6ac9ab8a00e0ceda1fa4d21
+      size: 3947347
   model_evaluation:
     cmd: python src/model_evaluation.py
     deps:
@@ -86,8 +86,8 @@ stages:
       nfiles: 2
     - path: models/random_forest_model.pkl
       hash: md5
-      md5: 3afd835c4ecaea05dc53eb6fa0faa139
-      size: 3432567
+      md5: 03a76521d6ac9ab8a00e0ceda1fa4d21
+      size: 3947347
     - path: src/model_evaluation.py
       hash: md5
       md5: 98f185ead0c9d5d6cb0b22edc002e7c8
@@ -95,5 +95,5 @@ stages:
     outs:
     - path: reports/metrics.json
       hash: md5
-      md5: 91a279fea3e34dc02eac78c3f403ce36
-      size: 127
+      md5: b7f1a47c8d17a31ec3a58f773c96b896
+      size: 140
